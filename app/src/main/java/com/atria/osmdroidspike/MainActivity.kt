@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         map.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
 
         markerPractice()
+
+        
     }
     override fun onResume() {
         super.onResume()
