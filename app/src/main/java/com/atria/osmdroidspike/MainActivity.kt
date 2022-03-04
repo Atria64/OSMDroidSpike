@@ -3,6 +3,8 @@ package com.atria.osmdroidspike
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -22,11 +24,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var map : MapView
     private val miraiDai = GeoPoint(41.8361445,140.7655297)
     private val otaruEki = GeoPoint(43.1970802,140.9933062)
+    private lateinit var points : MutableList<GeoPoint>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
         setContentView(R.layout.activity_main)
+        points = mutableListOf()
         map = findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
         val mapController = map.controller
@@ -35,9 +40,30 @@ class MainActivity : AppCompatActivity() {
         map.setMultiTouchControls(true)//マップの2本指でのピンチアウト
         map.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
 
-        markerPractice()
-
-        
+        addMarker(miraiDai)
+        addMarker(otaruEki)
+        drawLine()
+        val button = findViewById<Button>(R.id.button)
+        button.setOnClickListener{
+            val latitude = findViewById<EditText>(R.id.editText1).text.toString().toDouble()
+            val longitude = findViewById<EditText>(R.id.editText2).text.toString().toDouble()
+            addMarker(GeoPoint(latitude,longitude))
+            drawLine()
+        }
+    }
+    private fun addMarker(geoPoint: GeoPoint){
+        val marker = Marker(map)
+        marker.position = geoPoint
+        marker.icon = ResourcesCompat.getDrawable(resources,R.drawable.ic_point_24,null)
+        marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER)
+        map.overlays.add(marker)
+        points.add(geoPoint)
+    }
+    private fun drawLine(){
+        val line = Polyline()
+        line.setPoints(points)
+        line.outlinePaint.color = 0xAA900F42.toInt()
+        map.overlays.add(line)
     }
     override fun onResume() {
         super.onResume()
@@ -61,22 +87,5 @@ class MainActivity : AppCompatActivity() {
                 permissionsToRequest.toTypedArray(),
                 REQUEST_PERMISSIONS_REQUEST_CODE)
         }
-    }
-
-    private fun markerPractice(){
-        val marker = Marker(map)
-        marker.position = GeoPoint(miraiDai)
-        marker.icon = ResourcesCompat.getDrawable(resources,R.drawable.ic_point_24,null)
-        marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER)
-        map.overlays.add(marker)
-        val marker2 = Marker(map)
-        marker2.position = GeoPoint(otaruEki)
-        marker2.icon = ResourcesCompat.getDrawable(resources,R.drawable.ic_point_24,null)
-        marker2.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER)
-        map.overlays.add(marker2)
-        val line = Polyline()
-        line.setPoints(listOf(miraiDai,otaruEki))
-        line.outlinePaint.color = 0xAA900F42.toInt()
-        map.overlays.add(line)
     }
 }
