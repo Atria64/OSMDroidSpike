@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         map.setMultiTouchControls(true)//マップの2本指でのピンチアウト
         map.setLayerType(View.LAYER_TYPE_SOFTWARE,null)
 
-        addMarker(miraiDai)
         addMarker(otaruEki)
+        addMarker(miraiDai)
         drawLine()
         val button = findViewById<Button>(R.id.button)
         button.setOnClickListener{
