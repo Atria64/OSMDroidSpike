@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             val area = getArea()
             map.zoomToBoundingBox(area,true)
             drawLine()
+            findViewById<TextView>(R.id.comboTextView).text = points.size.toString() + " Combo!"
         }
     }
     private fun addMarker(geoPoint: GeoPoint){
